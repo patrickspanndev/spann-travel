@@ -1,10 +1,12 @@
 # Spann Travel — project progress ledger
 
-Maintain this checklist as milestones land. Boxes use GitHub-flavored Markdown `[ ] / [x]`.
+**Canonical ordered steps:** **`docs/APP_BUILD_CHECKLIST.md`**. This file mirrors milestone status — try to keep `[x]` items aligned when you ship.
+
+Boxes use GitHub-flavored Markdown `[ ] / [x]`.
 
 Instructions:
 
-1. Align completed work with phased plan in repo `README.md`.
+1. Walk the build using **`docs/APP_BUILD_CHECKLIST.md`** first.
 2. Optionally annotate completion dates (`[x] 2026-05-06`) beside heavy milestones.
 3. Capture **Next micro-step** bullets when stopping mid-phase.
 
@@ -23,6 +25,7 @@ Stretch ideas stay unchecked until promoted.
 
 ### Phase 1 · Postgres schema + governance
 
+- [ ] Work through **`docs/SUPABASE_SETUP_CHECKLIST.md`** (primary checklist for hosted Supabase)
 - [ ] Execute `supabase/migrations/20260506230000_initial_schema.sql` in hosted Supabase
 - [ ] Validate `handle_new_user` trigger fires on email signup (+ seeded rows exist)
 - [ ] Spot-check Row Level Security (throwaway tenant cannot read other household)

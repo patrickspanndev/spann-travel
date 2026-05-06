@@ -10,15 +10,15 @@ Private Next.js dashboard for loyalty strategy, checklists (immediate / 30-day /
 |------|---------|
 | `web/` | Next.js 16 · App Router · Tailwind v4 · Supabase Auth + Postgres RLS |
 | `supabase/migrations/` | SQL you apply manually in Supabase (or sync via CLI) |
-| `docs/PROJECT_PROGRESS.md` | Maintainer checklist tracking product build milestones |
+| `docs/APP_BUILD_CHECKLIST.md` | **Full build path:** repo → Supabase → local → Vercel → MVP backlog |
+| `docs/PROJECT_PROGRESS.md` | Maintainer milestone ledger (keep in sync with build checklist) |
 | `docs/CHECKLISTS.md` | How household checklists behave + reset / join patterns |
+| `docs/SUPABASE_SETUP_CHECKLIST.md` | Supabase-only deep checklist |
 | `app_prompt.txt` | Original UX + feature brief |
 
-### One-time prerequisites
+### One-time prerequisites (full sequence)
 
-1. **Supabase** — create project, enable Email/password auth (`Authentication → Providers → Email`). Optionally disable mandatory email confirmations for MVP so sign-up is instant.
-2. **SQL migration** — open `supabase/migrations/20260506230000_initial_schema.sql`, paste into Supabase **SQL Editor → Run**. This installs tables + RLS + signup trigger (`handle_new_user`) that seeds playbook checklists automatically for each new household.
-3. **Environment** — inside `web/`, copy `.env.example` to `.env.local` and paste `NEXT_PUBLIC_SUPABASE_URL` plus `NEXT_PUBLIC_SUPABASE_ANON_KEY` from `Project Settings → API`.
+Use **`docs/APP_BUILD_CHECKLIST.md`** — ordered checkboxes from clone through production and MVP modules. Supabase detail lives in **`docs/SUPABASE_SETUP_CHECKLIST.md`**.
 
 ### Daily development
 
@@ -41,4 +41,4 @@ npm run dev    # http://localhost:3000
 
 ### Maintainer documentation
 
-Keep `docs/PROJECT_PROGRESS.md` updated as milestones land (GitHub-flavored Markdown checkboxes). Operational checklist guidance lives in `docs/CHECKLISTS.md`.
+Primary: **`docs/APP_BUILD_CHECKLIST.md`**. Track major milestones in **`docs/PROJECT_PROGRESS.md`**. Supabase drill-down: **`docs/SUPABASE_SETUP_CHECKLIST.md`**. Checklist ops: **`docs/CHECKLISTS.md`**.
