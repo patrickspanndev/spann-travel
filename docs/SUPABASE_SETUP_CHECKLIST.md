@@ -4,6 +4,8 @@ Part of the full path in **[`APP_BUILD_CHECKLIST.md`](./APP_BUILD_CHECKLIST.md)*
 
 Work top to bottom and tick boxes (`[ ]` → `[x]`) as you finish each item in Git.
 
+UI labels shift over time — if wording differs slightly, match the intent (same sidebar areas).
+
 ---
 
 ## A · Create the project
@@ -22,14 +24,50 @@ Work top to bottom and tick boxes (`[ ]` → `[x]`) as you finish each item in G
 
 ---
 
-## C · API keys → local env (+ later Vercel)
+## C · Project URL + API keys → `web/.env.local`
 
-- [ ] **Project Settings → API** — copy **Project URL**
-- [ ] Same page — copy **anon public** key (not `service_role`)
+Supabase separates **Project URL** and **keys** onto different screens. This app expects two vars (see `web/.env.example`):
+
+| Env var | What it is |
+|---------|-------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Your project API host: `https://<project-ref>.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | The **legacy anon (JWT)** public key — see step C2 below |
+
+### C1 · Project URL (if you don’t see “Project URL” by name)
+
+Try in order — one of these always exposes the same host:
+
+- [ ] **Project Settings** (gear) → **General** — look for **Reference ID** / **Project URL** / **Configuration** text that includes `https://….supabase.co`
+- [ ] Project **home / Overview** — often a **Connect** or **Connect to your project** control; the dialog lists the API URL
+- [ ] **Project Settings → Data API** (or **API** in older layouts) — connection info may show the base URL
+- [ ] **SQL Editor** — small project menu or header sometimes links to project ref; URL format is always:  
+  `https://<project-ref>.supabase.co`  
+  (`project-ref` is the short id in your dashboard URL: `supabase.com/dashboard/project/<project-ref>`)
+
+Set in `.env.local`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL="https://YOUR_PROJECT_REF.supabase.co"
+```
+
+### C2 · Public key this repo uses (**legacy anon**, not publishable branding yet)
+
+Supabase moved to **Publishable** / **Secret** keys (`sb_publishable_…`, `sb_secret_…`). The Spann Travel app is wired like standard Supabase + Next tutorials: **`NEXT_PUBLIC_SUPABASE_ANON_KEY`** = the **JWT-style anon key**.
+
+- [ ] Open **Project Settings → API Keys**
+- [ ] Switch the tab to **`Legacy anon, service_role API keys`** (or similarly named “Legacy” tab)
+- [ ] Copy the **`anon` `public`** key (starts with **`eyJ`**) → that value is **`NEXT_PUBLIC_SUPABASE_ANON_KEY`**
+- [ ] **Do not** put the **`service_role`** secret in any `NEXT_PUBLIC_*` var or in client code
+- [ ] On the same page, the new **Secret** key (`sb_secret_…`) is also **not** for this Next.js client env — ignore for MVP
+
+If you only use the new **Publishable** key: stay on **legacy anon** for this project until the app/SDK migration is documented otherwise.
+
+### C3 · Local env file
+
 - [ ] In repo: `cd web/` → copy `.env.example` → `.env.local`
-- [ ] Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local`
-- [ ] **Do not** commit `.env.local` (already ignored)
-- [ ] **Do not** put `service_role` in Next.js client env unless you intentionally add guarded server-only usage later
+- [ ] Paste **`NEXT_PUBLIC_SUPABASE_URL`** and **`NEXT_PUBLIC_SUPABASE_ANON_KEY`** (steps C1 + C2)
+- [ ] **Do not** commit `.env.local` (gitignored)
+- [ ] **Vercel later:** same two variable **names** and values in Project → Environment Variables
 
 ---
 
@@ -38,7 +76,8 @@ Work top to bottom and tick boxes (`[ ]` → `[x]`) as you finish each item in G
 - [ ] **SQL Editor** → new query
 - [ ] Paste full file: `supabase/migrations/20260506230000_initial_schema.sql`
 - [ ] **Run**
-- [ ] No errors (if trigger syntax fails on your Postgres build, adjust `EXECUTE FUNCTION` / `EXECUTE PROCEDURE` per SQL Editor message and re-run only the failing statements—or ask in-repo)
+- [ ] If you **already** applied an **older** copy of that file and **Checklists** shows `infinite recursion detected in policy for relation "profiles"`, run **`supabase/migrations/20260507090000_fix_profiles_rls_recursion.sql`** once in SQL Editor (safe to re-run policies + function)
+- [ ] No other errors (if trigger syntax fails on your Postgres build, adjust `EXECUTE FUNCTION` / `EXECUTE PROCEDURE` per SQL Editor message and re-run only the failing statements—or ask in-repo)
 - [ ] **Table Editor** — confirm tables exist: `households`, `profiles`, `checklist_lists`, `checklist_items`
 
 ---
