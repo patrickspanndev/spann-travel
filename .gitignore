@@ -1,0 +1,17 @@
+.DS_Store
+.env
+.env.local
+.env*.local
+
+# Next.js artifacts
+web/.next/
+web/out/
+web/.turbo/
+
+# Logs + diagnostics
+**/npm-debug.log*
+**/pnpm-debug.log*
+web/node_modules/
+
+# Supabase CLI local artefacts (future)
+**/supabase/.temp/

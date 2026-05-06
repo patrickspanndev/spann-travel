@@ -1,0 +1,214 @@
+
+Act as a senior product architect, full-stack engineer, and UX designer.
+
+I want to build a private household travel entertainment and rewards planning app called the Spann Travel Entertainment App.
+
+The app should help my wife and me manage our family travel lifestyle, loyalty programs, reward points strategy, travel plans, entertainment ideas, and travel inspiration in one private, beautiful, mobile-friendly dashboard.
+
+This is not just a booking app. It is our household travel operating system.
+
+The app should be based on the attached Travel Points & Loyalty Strategy Playbook, which includes our household strategy for:
+
+* AMEX Membership Rewards
+* Chase Freedom / future Chase Sapphire Preferred
+* United MileagePlus
+* Delta SkyMiles
+* Flying Blue / Air France-KLM
+* Air Canada Aeroplan
+* Alaska Mileage Plan
+* British Airways Avios
+* JAL Mileage Bank
+* Marriott Bonvoy
+* World of Hyatt
+* Hilton Honors
+* IHG One Rewards
+* Rakuten
+* airline dining programs
+* shopping portals
+* monthly rewards checklists
+
+Core idea:
+Build a private, password-protected household travel dashboard where we can track loyalty accounts, plan trips, monitor points strategies, organize travel ideas, manage monthly rewards tasks, and eventually connect travel memories/photos/videos.
+
+The app should support:
+
+1. Household Travel Dashboard
+
+* Overview of our travel ecosystem
+* Current loyalty programs by person
+* Credit card ecosystem summary
+* Airline alliance strategy: SkyTeam, Star Alliance, Oneworld
+* Hotel ecosystem: Marriott, Hyatt, Hilton, IHG
+* Rewards multipliers: Rakuten, airline portals, dining programs
+
+2. Loyalty Account Tracker
+    Track each program for both spouses:
+
+* Program name
+* Category: airline, hotel, credit card, portal, dining
+* Alliance, if applicable
+* Account holder
+* Account number placeholder
+* Login email used
+* Current points/miles balance
+* Status tier
+* Notes
+* Last updated date
+
+3. Immediate Execution Checklist
+    Build a checklist based on the playbook:
+
+* Create Flying Blue accounts for both spouses
+* Attach Flying Blue number to existing Air France reservation
+* Verify United and Delta accounts
+* Create Aeroplan accounts
+* Create Alaska, British Airways Avios, and JAL accounts
+* Create Hyatt and Hilton accounts
+* Verify Marriott accounts
+* Create IHG accounts
+* Configure Rakuten for AMEX Membership Rewards
+* Register for MileagePlus Dining, SkyMiles Dining, and Marriott Eat Around Town
+* Activate United MileagePlus Shopping and Delta SkyMiles Shopping
+* Evaluate Chase Sapphire Preferred
+
+4. 30-Day Execution Plan
+    Create a week-by-week checklist:
+
+* Week 1: account creation
+* Week 2: rewards multiplier setup
+* Week 3: AMEX/Chase/category audit
+* Week 4: card strategy and first redemption goal
+
+5. Monthly Rewards Operating Rhythm
+    Create a recurring monthly checklist:
+
+* Review AMEX transfer bonuses
+* Review airline transfer bonuses
+* Review Marriott promotions
+* Review Hyatt promotions
+* Review Rakuten bonus periods
+* Activate Chase Freedom categories
+* Review AMEX Offers
+* Track upcoming trips
+* Confirm award availability before transfers
+
+6. Trip Planning Module
+    Allow us to create potential trips with:
+
+* Trip name
+* Destination
+* Target dates
+* Travelers
+* Purpose: vacation, family, anniversary, international, luxury, quick getaway
+* Target airline programs
+* Target hotel programs
+* Estimated cash cost
+* Estimated points/miles needed
+* Notes
+* Status: idea, researching, ready to book, booked, completed
+
+7. Travel Entertainment / Inspiration Module
+    Create a section for:
+
+* Travel ideas
+* Restaurants
+* shows/events
+* attractions
+* family activities
+* museums
+* tours
+* beaches/resorts
+* anniversary ideas
+* Japan/Europe/luxury resort ideas
+
+8. Award Travel Strategy View
+    Create simple dashboards/views for:
+
+* Best programs for Europe
+* Best programs for Japan/Asia
+* Best hotel programs
+* When to use AMEX
+* When to use Chase
+* When to use United
+* When to use Flying Blue
+* When to use Hyatt
+* Warnings: do not buy miles speculatively, do not transfer points before confirming award availability
+
+9. Access/Security Model
+    The app should be private by default.
+    Support:
+
+* Password-protected login
+* Admin role
+* Household member role
+* Optional viewer role later
+* Ability to store sensitive fields carefully
+* Do not expose full passwords
+* Allow account number fields to be optional or masked
+
+10. Future Enhancements
+    Design the app so we can later add:
+
+* Photo/video travel memory archive
+* Upload travel documents
+* Store confirmations
+* Parse emails for trip details
+* Add AI trip suggestions
+* Add point balance sync if APIs are available
+* Add calendar reminders
+* Add shareable trip itinerary links
+* Add mobile PWA support
+
+Recommended MVP Tech Stack:
+Use a practical modern stack that is easy to build and maintain:
+
+* Next.js / React frontend
+* Tailwind CSS for clean UI
+* Supabase for auth, database, and storage
+* PostgreSQL schema
+* Row-level security for private household data
+* Optional Vercel deployment
+
+Build Requirements:
+
+* Create a polished responsive UI
+* Use card-based dashboards
+* Add filters by program type, alliance, person, and priority
+* Add editable checklists
+* Add basic CRUD for loyalty accounts and trips
+* Add a clean admin/settings page
+* Seed the database with our initial travel programs and checklist items from the playbook
+* Make it feel like a premium household travel command center, not a generic task app
+
+Output Needed:
+
+1. Recommend the app architecture
+2. Create the initial database schema
+3. Build the main UI routes/pages
+4. Create reusable components
+5. Seed initial data from the Travel Points Playbook
+6. Add setup instructions
+7. Add a README
+8. Provide deployment guidance
+
+Suggested App Pages:
+
+* /dashboard
+* /loyalty-programs
+* /checklists
+* /trips
+* /travel-ideas
+* /strategy
+* /settings
+
+Design Tone:
+
+* Clean
+* Premium
+* Family travel command center
+* Executive dashboard feel
+* Mobile-friendly
+* Simple enough for both spouses to use
+* Not over-engineered, but scalable
+
+Start by generating the project structure, database schema, seed data, and first-pass UI. Then implement the MVP incrementally.
