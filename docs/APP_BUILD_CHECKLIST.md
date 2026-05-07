@@ -31,8 +31,8 @@ Then confirm:
 
 - [ ] Email/password auth enabled for the app flows
 - [ ] **`supabase/migrations/20260506230000_initial_schema.sql`** applied cleanly (tables, RLS, trigger, seeded checklists)
-- [ ] **`web/.env.local`** has `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` (`web/.env.example` template)
-- [ ] Sign-up triggers `households` / `profiles` / checklist rows (see checklist doc)
+- [ ] **`web/.env.local`**: **`NEXT_PUBLIC_SUPABASE_URL`** (see checklist — often **General** / **Connect**, not API Keys page) plus **`NEXT_PUBLIC_SUPABASE_ANON_KEY`** (**API Keys → Legacy anon** `eyJ…` key)
+- [ ] Sign-up triggers `households` / `profiles` / checklist rows (see Supabase checklist)
 
 ---
 
