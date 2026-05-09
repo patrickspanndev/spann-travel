@@ -33,6 +33,7 @@ export default async function LoyaltyProgramsPage() {
       id,
       member_id_hint,
       login_email_hint,
+      login_password,
       balance_display,
       tier,
       notes,
@@ -75,6 +76,7 @@ export default async function LoyaltyProgramsPage() {
       tier: string | null;
       notes: string | null;
       last_reviewed_at: string | null;
+      login_password?: string | null;
       loyalty_programs:
         | { slug: string; name: string; category: string; alliance: string | null }
         | { slug: string; name: string; category: string; alliance: string | null }[]
@@ -83,10 +85,13 @@ export default async function LoyaltyProgramsPage() {
     };
     const lp = Array.isArray(r.loyalty_programs) ? r.loyalty_programs[0] : r.loyalty_programs;
     const pr = Array.isArray(r.profiles) ? r.profiles[0] : r.profiles;
+    const pw = r.login_password;
+    const passwordIsSet = typeof pw === "string" && pw.length > 0;
     return {
       id: r.id,
       member_id_hint: r.member_id_hint,
       login_email_hint: r.login_email_hint,
+      passwordIsSet,
       balance_display: r.balance_display,
       tier: r.tier,
       notes: r.notes,
@@ -100,8 +105,9 @@ export default async function LoyaltyProgramsPage() {
     <>
       <h1 className="text-3xl font-semibold tracking-tight text-white">Loyalty programs</h1>
       <p className="mt-2 max-w-2xl text-sm text-slate-400">
-        Catalog is shared; each row is a traveler in your household plus one program (Flying Blue, SkyMiles, Hyatt, etc.).
-        Store masked member IDs only.
+        Catalog is shared; each row is a traveler plus one program. Member ID: mask only. Optional{" "}
+        <strong className="font-medium text-slate-300">website password</strong> is stored for convenience (anyone in
+        this household can see stored credentials via RLS); a password manager is still safer for high-value logins.
       </p>
       {!canEdit ? (
         <p className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-sm text-amber-100">

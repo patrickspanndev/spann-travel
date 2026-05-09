@@ -39,6 +39,7 @@ export async function createLoyaltyAccount(formData: FormData): Promise<void> {
     tier: nullIfEmpty(formData.get("tier")),
     notes: nullIfEmpty(formData.get("notes")),
     last_reviewed_at: nullIfEmpty(formData.get("last_reviewed_at")),
+    login_password: nullIfEmpty(formData.get("login_password")),
   };
 
   const { error } = await ctx.supabase.from("loyalty_accounts").insert(payload);
@@ -54,16 +55,27 @@ export async function updateLoyaltyAccount(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
   if (!id) throw new Error("Missing id.");
 
+  const patch: Record<string, string | null> = {
+    member_id_hint: nullIfEmpty(formData.get("member_id_hint")),
+    login_email_hint: nullIfEmpty(formData.get("login_email_hint")),
+    balance_display: nullIfEmpty(formData.get("balance_display")),
+    tier: nullIfEmpty(formData.get("tier")),
+    notes: nullIfEmpty(formData.get("notes")),
+    last_reviewed_at: nullIfEmpty(formData.get("last_reviewed_at")),
+  };
+
+  if (formData.get("clear_login_password") === "on") {
+    patch.login_password = null;
+  } else {
+    const newPw = nullIfEmpty(formData.get("new_login_password"));
+    if (newPw !== null) {
+      patch.login_password = newPw;
+    }
+  }
+
   const { error } = await ctx.supabase
     .from("loyalty_accounts")
-    .update({
-      member_id_hint: nullIfEmpty(formData.get("member_id_hint")),
-      login_email_hint: nullIfEmpty(formData.get("login_email_hint")),
-      balance_display: nullIfEmpty(formData.get("balance_display")),
-      tier: nullIfEmpty(formData.get("tier")),
-      notes: nullIfEmpty(formData.get("notes")),
-      last_reviewed_at: nullIfEmpty(formData.get("last_reviewed_at")),
-    })
+    .update(patch)
     .eq("id", id)
     .eq("household_id", ctx.profile.household_id);
 

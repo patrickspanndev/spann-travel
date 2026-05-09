@@ -20,6 +20,7 @@ export type LoyaltyAccountVM = {
   id: string;
   member_id_hint: string | null;
   login_email_hint: string | null;
+  passwordIsSet: boolean;
   balance_display: string | null;
   tier: string | null;
   notes: string | null;
@@ -62,7 +63,8 @@ export function LoyaltyWorkspace({
         <section className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-6">
           <h2 className="text-sm font-semibold text-white">Add program per traveler</h2>
           <p className="mt-1 text-xs text-slate-500">
-            One row per person per program. Member ID is optional — store last digits or a mask, not full account numbers.
+            One row per person per program. Member ID is optional — store last digits or a mask, not full account
+            numbers. Website password is optional and shared with everyone in this household who can open Loyalty.
           </p>
           <form action={createLoyaltyAccount} className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <label className="flex flex-col gap-1 text-xs">
@@ -112,7 +114,15 @@ export function LoyaltyWorkspace({
               />
             </label>
             <label className="flex flex-col gap-1 text-xs">
-              <span className="font-medium text-slate-400">Balance (free text)</span>
+              <span className="font-medium text-slate-400">Website password (optional)</span>
+              <input
+                type="password"
+                name="login_password"
+                autoComplete="new-password"
+                className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none ring-teal-500/40 focus:ring-2"
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-xs">
               <input
                 name="balance_display"
                 placeholder="e.g. 48k FB"
@@ -224,6 +234,12 @@ function LoyaltyAccountCard({ row, canEdit }: { row: LoyaltyAccountVM; canEdit: 
               <dd className="text-slate-200">{row.balance_display}</dd>
             </div>
           ) : null}
+          {row.passwordIsSet ? (
+            <div>
+              <dt className="text-slate-500">Website password</dt>
+              <dd className="text-slate-400">Saved (not shown in view-only)</dd>
+            </div>
+          ) : null}
           {row.tier ? (
             <div>
               <dt className="text-slate-500">Tier</dt>
@@ -264,13 +280,33 @@ function LoyaltyAccountCard({ row, canEdit }: { row: LoyaltyAccountVM; canEdit: 
             className="rounded border border-white/10 bg-black/30 px-2 py-1.5 text-sm text-white outline-none focus:ring-1 focus:ring-teal-500/50"
           />
         </label>
-        <label className="flex flex-col gap-1 text-xs">
+        <label className="flex flex-col gap-1 text-xs sm:col-span-2">
           <span className="text-slate-500">Login email</span>
           <input
             name="login_email_hint"
             defaultValue={row.login_email_hint ?? ""}
             className="rounded border border-white/10 bg-black/30 px-2 py-1.5 text-sm text-white outline-none focus:ring-1 focus:ring-teal-500/50"
           />
+        </label>
+        {row.passwordIsSet ? (
+          <p className="text-xs text-slate-500 sm:col-span-2">
+            A website password is stored. Enter a new one below to replace it, or check &ldquo;clear&rdquo; to remove.
+          </p>
+        ) : (
+          <p className="text-xs text-slate-500 sm:col-span-2">No website password stored yet.</p>
+        )}
+        <label className="flex flex-col gap-1 text-xs sm:col-span-2">
+          <span className="text-slate-500">New website password (leave blank to keep)</span>
+          <input
+            type="password"
+            name="new_login_password"
+            autoComplete="new-password"
+            className="rounded border border-white/10 bg-black/30 px-2 py-1.5 text-sm text-white outline-none focus:ring-1 focus:ring-teal-500/50"
+          />
+        </label>
+        <label className="flex items-center gap-2 text-xs sm:col-span-2">
+          <input type="checkbox" name="clear_login_password" className="size-3 rounded border-white/30" />
+          <span className="text-slate-400">Clear stored website password</span>
         </label>
         <label className="flex flex-col gap-1 text-xs">
           <span className="text-slate-500">Balance</span>
