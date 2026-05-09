@@ -148,6 +148,46 @@ export default async function DashboardPage() {
           </ol>
         )}
       </section>
+
+      <ModuleSnapshot />
     </>
+  );
+}
+
+async function ModuleSnapshot() {
+  const supabase = await createClient();
+  const loyalty = await supabase.from("loyalty_accounts").select("*", { count: "exact", head: true });
+  const trips = await supabase.from("trips").select("*", { count: "exact", head: true });
+  const ideas = await supabase.from("travel_ideas").select("*", { count: "exact", head: true });
+
+  if (loyalty.error?.message.includes("relation")) {
+    return null;
+  }
+
+  return (
+    <section className="mt-10 rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-6">
+      <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-400/90">Modules</h2>
+      <p className="mt-2 text-sm text-slate-500">Phase 8 data — Loyalty, Trips, and Ideas.</p>
+      <ul className="mt-6 grid gap-4 sm:grid-cols-3">
+        <li className="rounded-xl border border-white/[0.06] bg-black/20 px-4 py-3">
+          <Link href="/loyalty-programs" className="text-sm font-medium text-teal-300 hover:text-teal-200">
+            Loyalty accounts
+          </Link>
+          <p className="mt-1 text-2xl font-semibold tabular-nums text-white">{loyalty.count ?? 0}</p>
+        </li>
+        <li className="rounded-xl border border-white/[0.06] bg-black/20 px-4 py-3">
+          <Link href="/trips" className="text-sm font-medium text-teal-300 hover:text-teal-200">
+            Trips
+          </Link>
+          <p className="mt-1 text-2xl font-semibold tabular-nums text-white">{trips.count ?? 0}</p>
+        </li>
+        <li className="rounded-xl border border-white/[0.06] bg-black/20 px-4 py-3">
+          <Link href="/travel-ideas" className="text-sm font-medium text-teal-300 hover:text-teal-200">
+            Travel ideas
+          </Link>
+          <p className="mt-1 text-2xl font-semibold tabular-nums text-white">{ideas.count ?? 0}</p>
+        </li>
+      </ul>
+    </section>
   );
 }

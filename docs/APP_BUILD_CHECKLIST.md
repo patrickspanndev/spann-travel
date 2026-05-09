@@ -89,26 +89,26 @@ Ship in any order; unchecked until shipped.
 
 #### Loyalty
 
-- [ ] Schema: catalog + **`loyalty_accounts`** (traveler, program, masked identifiers, balances, tiers) + household-scoped **RLS**
-- [ ] **`/loyalty-programs`**: filters + CRUD
+- [x] Schema: catalog + **`loyalty_accounts`** (traveler, program, masked identifiers, balances, tiers) + household-scoped **RLS**
+- [x] **`/loyalty-programs`**: filters + CRUD
 
 #### Trips
 
-- [ ] Schema: **`trips`** (destination, dates, travelers, purpose, statuses, estimates, target programs)
-- [ ] **`/trips`**: CRUD + status pipeline UI
+- [x] Schema: **`trips`** (destination, dates, travelers, purpose, statuses, estimates, target programs)
+- [x] **`/trips`**: CRUD + status pipeline UI
 
 #### Travel ideas
 
-- [ ] Schema: **`travel_ideas`** (typed categories — dining, resorts, museums, anniversary, etc.)
-- [ ] **`/travel-ideas`**: CRUD + filters
+- [x] Schema: **`travel_ideas`** (typed categories — dining, resorts, museums, anniversary, etc.)
+- [x] **`/travel-ideas`**: CRUD + filters
 
 #### Strategy
 
-- [ ] **`/strategy`**: playbook-style sections (alliances, when to use MR vs Chase vs partners, transfer warnings)
+- [x] **`/strategy`**: playbook-style sections (alliances, when to use MR vs Chase vs partners, transfer warnings)
 
 #### Quality-of-life
 
-- [ ] Optional: add/edit checklist rows in-app (beyond SQL seed)
+- [x] Optional: add/edit checklist rows in-app (beyond SQL seed)
 - [ ] Invite flow replacing manual profile SQL (**`docs/CHECKLISTS.md`** stopgap documented until then)
 
 ---

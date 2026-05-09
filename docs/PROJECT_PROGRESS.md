@@ -44,20 +44,20 @@ Stretch ideas stay unchecked until promoted.
 
 - [x] Household checklist ingestion seeded from playbook
 - [x] Toggle persistence + dashboard aggregates + anchored jump navigation
-- [ ] Optional authoring UI for ad-hoc checklist rows
+- [x] Optional authoring UI for ad-hoc checklist rows
 
 ---
 
 ### Phase 4 · Loyalty + trips modules
 
-- [ ] Loyalty program catalog + traveler CRUD surfaced in `/loyalty-programs`
-- [ ] Trips funnel + budgeting fields surfaced in `/trips`
+- [x] Loyalty program catalog + traveler CRUD surfaced in `/loyalty-programs`
+- [x] Trips funnel + budgeting fields surfaced in `/trips`
 
 ---
 
 ### Phase 5 · Strategy + Ops hardening
 
-- [ ] Rich `/strategy` content blocks + evergreen warnings pane
+- [x] Rich `/strategy` content blocks + evergreen warnings pane
 - [ ] Optional CSV/JSON export utilities
 
 ---

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChecklistBoard, type BoardList } from "@/components/checklist-board";
+import { ChecklistQuickAdd } from "@/components/checklist-quick-add";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -72,6 +73,8 @@ export default async function ChecklistsPage() {
         </div>
         <QuickJump ids={lists.map((l) => ({ slug: l.slug, title: l.title }))} />
       </div>
+
+      <ChecklistQuickAdd canEdit={canEdit} />
 
       {lists.length === 0 ? (
         <div className="mt-12 rounded-xl border border-white/10 bg-white/[0.03] p-8 text-center text-sm text-slate-400">
