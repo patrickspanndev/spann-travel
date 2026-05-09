@@ -4,6 +4,7 @@ import { getPublicSupabaseConfig } from "@/lib/supabase/public-env";
 
 const PROTECTED_PRE = [
   "/dashboard",
+  "/command-center",
   "/checklists",
   "/loyalty-programs",
   "/trips",

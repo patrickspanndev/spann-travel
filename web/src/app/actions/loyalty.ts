@@ -41,12 +41,14 @@ export async function createLoyaltyAccount(formData: FormData): Promise<void> {
     last_reviewed_at: nullIfEmpty(formData.get("last_reviewed_at")),
     login_password: nullIfEmpty(formData.get("login_password")),
     login_url: normalizeLoginUrl(formData.get("login_url")),
+    points_balance: parsePointsBalance(formData.get("points_balance")),
   };
 
   const { error } = await ctx.supabase.from("loyalty_accounts").insert(payload);
   if (error) throw new Error(error.message);
   revalidatePath("/loyalty-programs");
   revalidatePath("/dashboard");
+  revalidatePath("/command-center");
 }
 
 export async function updateLoyaltyAccount(formData: FormData): Promise<void> {
@@ -56,7 +58,7 @@ export async function updateLoyaltyAccount(formData: FormData): Promise<void> {
   const id = String(formData.get("id") ?? "");
   if (!id) throw new Error("Missing id.");
 
-  const patch: Record<string, string | null> = {
+  const patch: Record<string, string | null | number> = {
     member_id_hint: nullIfEmpty(formData.get("member_id_hint")),
     login_email_hint: nullIfEmpty(formData.get("login_email_hint")),
     login_url: normalizeLoginUrl(formData.get("login_url")),
@@ -64,6 +66,7 @@ export async function updateLoyaltyAccount(formData: FormData): Promise<void> {
     tier: nullIfEmpty(formData.get("tier")),
     notes: nullIfEmpty(formData.get("notes")),
     last_reviewed_at: nullIfEmpty(formData.get("last_reviewed_at")),
+    points_balance: parsePointsBalance(formData.get("points_balance")),
   };
 
   if (formData.get("clear_login_password") === "on") {
@@ -84,6 +87,7 @@ export async function updateLoyaltyAccount(formData: FormData): Promise<void> {
   if (error) throw new Error(error.message);
   revalidatePath("/loyalty-programs");
   revalidatePath("/dashboard");
+  revalidatePath("/command-center");
 }
 
 export async function deleteLoyaltyAccount(formData: FormData): Promise<void> {
@@ -102,6 +106,20 @@ export async function deleteLoyaltyAccount(formData: FormData): Promise<void> {
   if (error) throw new Error(error.message);
   revalidatePath("/loyalty-programs");
   revalidatePath("/dashboard");
+  revalidatePath("/command-center");
+}
+
+function parsePointsBalance(v: FormDataEntryValue | null): number | null {
+  const raw = nullIfEmpty(v);
+  if (raw === null) return null;
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n < 0) {
+    throw new Error("Points must be a non-negative number.");
+  }
+  if (!Number.isInteger(n)) {
+    throw new Error("Points must be a whole number (miles/points).");
+  }
+  return n;
 }
 
 function nullIfEmpty(v: FormDataEntryValue | null): string | null {

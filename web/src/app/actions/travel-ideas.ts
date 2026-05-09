@@ -67,7 +67,7 @@ export async function createTravelIdea(formData: FormData): Promise<void> {
   const { error } = await ctx.supabase.from("travel_ideas").insert(payload);
   if (error) throw new Error(error.message);
   revalidatePath("/travel-ideas");
-  revalidatePath("/dashboard");
+  revalidatePath("/command-center");
 }
 
 export async function updateTravelIdea(formData: FormData): Promise<void> {
@@ -93,7 +93,7 @@ export async function updateTravelIdea(formData: FormData): Promise<void> {
 
   if (error) throw new Error(error.message);
   revalidatePath("/travel-ideas");
-  revalidatePath("/dashboard");
+  revalidatePath("/command-center");
 }
 
 export async function deleteTravelIdea(formData: FormData): Promise<void> {
@@ -111,5 +111,5 @@ export async function deleteTravelIdea(formData: FormData): Promise<void> {
 
   if (error) throw new Error(error.message);
   revalidatePath("/travel-ideas");
-  revalidatePath("/dashboard");
+  revalidatePath("/command-center");
 }

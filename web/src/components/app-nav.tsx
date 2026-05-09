@@ -8,6 +8,7 @@ type AppNavProps = {
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/command-center", label: "Command Central" },
   { href: "/checklists", label: "Checklists" },
   { href: "/loyalty-programs", label: "Loyalty" },
   { href: "/trips", label: "Trips" },

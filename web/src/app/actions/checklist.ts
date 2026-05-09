@@ -52,7 +52,7 @@ export async function addChecklistItem(formData: FormData) {
   });
 
   if (error) return { error: error.message };
-  revalidatePath("/dashboard");
+  revalidatePath("/command-center");
   revalidatePath("/checklists");
   return { error: null as string | null };
 }
@@ -79,7 +79,7 @@ export async function toggleChecklistItem(formData: FormData) {
     return { error: error.message };
   }
 
-  revalidatePath("/dashboard");
+  revalidatePath("/command-center");
   revalidatePath("/checklists");
   return { error: null as string | null };
 }

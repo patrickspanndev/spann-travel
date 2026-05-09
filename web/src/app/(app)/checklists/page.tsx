@@ -59,8 +59,8 @@ export default async function ChecklistsPage() {
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
             Three tracks mirror the playbook: immediate setup, rolling 30-day execution, and a monthly rhythm. Progress
             aggregates on the{" "}
-            <Link className="font-medium text-teal-400 hover:text-teal-300" href="/dashboard">
-              dashboard
+            <Link className="font-medium text-teal-400 hover:text-teal-300" href="/command-center">
+              Command Central
             </Link>
             . See repo <code className="rounded bg-white/10 px-1 text-xs text-teal-200">docs/CHECKLISTS.md</code>{" "}
             for resets and seeds.

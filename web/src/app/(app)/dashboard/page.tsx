@@ -1,193 +1,141 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { sortChecklistItems } from "@/lib/checklists/sort";
 
-type ItemRow = {
-  id: string;
-  title: string;
-  is_completed: boolean;
-  sort_order: number;
-  week_number?: number | null;
+export const metadata: Metadata = {
+  title: "Dashboard · Spann Travel",
+  description: "Household points by program type.",
 };
 
-type ListRow = {
-  slug: string;
-  title: string;
-  checklist_items?: ItemRow[] | null;
-};
-
-function calcProgress(rows: ItemRow[]) {
-  if (rows.length === 0) return 0;
-  return Math.round((rows.filter((i) => i.is_completed).length / rows.length) * 100);
-}
+const TYPE_ORDER = ["Airline", "Hotel", "Credit Card", "Car Rental", "Other"] as const;
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  const { data: lists } = await supabase
-    .from("checklist_lists")
-    .select("slug,title,sort_order,checklist_items(id,title,is_completed,sort_order,week_number)")
-    .order("sort_order");
+  const { data: rows, error } = await supabase.from("loyalty_accounts").select(`
+      points_balance,
+      loyalty_programs ( program_type, name )
+    `);
 
-  const orderedLists = (lists as ListRow[] | null)?.map((list) => ({
-    ...list,
-    checklist_items: sortChecklistItems(
-      (list.checklist_items ?? []).map((item) => ({
-        ...item,
-        sort_order: item.sort_order ?? 0,
-        week_number: item.week_number ?? null,
-      })),
-    ),
-  }));
+  const missingRelation = error?.message.includes("relation") || error?.message.includes("column");
+  const missingColumn =
+    error?.message.includes("program_type") || error?.message.includes("points_balance");
 
-  const allItems =
-    orderedLists?.flatMap((l) =>
-      (l.checklist_items ?? []).map((i) => ({
-        ...i,
-        listSlug: l.slug,
-        listTitle: l.title,
-      })),
-    ) ?? [];
+  if (missingRelation) {
+    return (
+      <>
+        <h1 className="text-3xl font-semibold tracking-tight text-white">Dashboard</h1>
+        <p className="mt-4 max-w-2xl rounded-xl border border-amber-500/30 bg-amber-500/[0.06] p-5 text-sm text-amber-100">
+          Loyalty tables are not installed yet. Run Phase 8 migrations from{" "}
+          <code className="rounded bg-black/30 px-1 text-xs text-amber-200">supabase/migrations/</code> in Supabase
+          SQL.
+        </p>
+      </>
+    );
+  }
 
-  const total = allItems.length;
-  const completed = allItems.filter((i) => i.is_completed).length;
-  const overall = total === 0 ? 0 : Math.round((completed / total) * 100);
+  if (missingColumn) {
+    return (
+      <>
+        <h1 className="text-3xl font-semibold tracking-tight text-white">Dashboard</h1>
+        <p className="mt-4 max-w-2xl rounded-xl border border-amber-500/30 bg-amber-500/[0.06] p-5 text-sm text-amber-100">
+          Run{" "}
+          <code className="rounded bg-black/30 px-1 text-xs text-amber-200">
+            supabase/migrations/20260510100000_loyalty_program_type_points.sql
+          </code>{" "}
+          (and earlier loyalty migrations if you see errors about{" "}
+          <code className="text-amber-200">login_password</code>), then reload.
+        </p>
+      </>
+    );
+  }
 
-  const openImmediate = allItems.filter((i) => i.listSlug === "immediate" && !i.is_completed).slice(0, 5);
+  if (error) {
+    return (
+      <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-6 text-sm text-rose-100">{error.message}</div>
+    );
+  }
+
+  type Row = {
+    points_balance: number | null;
+    loyalty_programs: { program_type: string; name: string } | { program_type: string; name: string }[] | null;
+  };
+
+  const aggregates: Record<string, { totalPoints: number; accounts: number; programs: Set<string> }> = {};
+  for (const t of TYPE_ORDER) {
+    aggregates[t] = { totalPoints: 0, accounts: 0, programs: new Set<string>() };
+  }
+
+  for (const raw of rows ?? []) {
+    const r = raw as Row;
+    const lp = Array.isArray(r.loyalty_programs) ? r.loyalty_programs[0] : r.loyalty_programs;
+    const ptype = lp?.program_type;
+    const bucket: (typeof TYPE_ORDER)[number] =
+      ptype && (TYPE_ORDER as readonly string[]).includes(ptype)
+        ? (ptype as (typeof TYPE_ORDER)[number])
+        : "Other";
+    aggregates[bucket].accounts += 1;
+    if (lp?.name) aggregates[bucket].programs.add(lp.name);
+    if (r.points_balance != null) aggregates[bucket].totalPoints += Number(r.points_balance);
+  }
 
   return (
     <>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-white">Command center</h1>
-          <p className="mt-2 max-w-xl text-sm text-slate-400">
-            Progress across playbook checklists. Details and edits live on{" "}
-            <Link href="/checklists" className="font-medium text-teal-400 hover:text-teal-300">
-              Checklists
+          <h1 className="text-3xl font-semibold tracking-tight text-white">Dashboard</h1>
+          <p className="mt-2 max-w-2xl text-sm text-slate-400">
+            Totals use optional <strong className="font-medium text-slate-300">points</strong> on each loyalty row
+            (miles/points as a whole number). Free-text balance lines are for notes only — edit accounts on{" "}
+            <Link href="/loyalty-programs" className="font-medium text-teal-400 hover:text-teal-300">
+              Loyalty
+            </Link>
+            . Playbook execution lives on{" "}
+            <Link href="/command-center" className="font-medium text-teal-400 hover:text-teal-300">
+              Command Central
             </Link>
             .
           </p>
         </div>
-        {user ? (
-          <p className="text-xs uppercase tracking-wide text-slate-500">Signed in as {user.email}</p>
-        ) : null}
       </div>
 
-      <section className="mt-10 grid gap-6 lg:grid-cols-[1.2fr_minmax(0,1fr)]">
-        <div className="rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-6 shadow-lg shadow-black/30">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-400/90">
-            Overall playbook progress
-          </h2>
-          <div className="mt-4 flex flex-wrap items-baseline gap-2">
-            <span className="text-5xl font-semibold text-white tabular-nums">{overall}%</span>
-            <span className="text-sm text-slate-400">
-              {completed} of {total} steps complete
-            </span>
-          </div>
-          <div className="mt-4 h-3 w-full overflow-hidden rounded-full bg-black/40">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-teal-700 to-teal-400 transition-[width] duration-500"
-              style={{ width: `${overall}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-4 rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-6">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-400/90">
-            Per track
-          </h2>
-          <ul className="flex flex-col gap-4">
-            {orderedLists?.map((list) => {
-              const items = list.checklist_items ?? [];
-              const p = calcProgress(items);
-              return (
-                <li key={list.slug} className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-slate-200">{list.title}</span>
-                    <span className="tabular-nums text-slate-500">{p}%</span>
-                  </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-black/35">
-                    <div
-                      className="h-full rounded-full bg-teal-600/90"
-                      style={{ width: `${p}%` }}
-                    />
-                  </div>
-                  <span className="text-xs text-slate-500">
-                    {items.filter((i) => i.is_completed).length} / {items.length} done
+      <section className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {TYPE_ORDER.map((t) => {
+          const a = aggregates[t];
+          const noAccounts = a.accounts === 0;
+          return (
+            <article
+              key={t}
+              className="rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-5 shadow-lg shadow-black/20"
+            >
+              <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-400/90">{t}</h2>
+              <p className="mt-4 text-3xl font-semibold tabular-nums text-white">
+                {noAccounts ? "—" : formatPoints(a.totalPoints)}
+              </p>
+              <p className="mt-1 text-sm text-slate-500">
+                {noAccounts
+                  ? "no accounts in this type"
+                  : a.totalPoints === 0
+                    ? "sum is 0 — add points on loyalty rows if you want totals"
+                    : "sum of points (where entered)"}
+              </p>
+              <p className="mt-4 text-xs text-slate-400">
+                {a.accounts} account{a.accounts === 1 ? "" : "s"}
+                {a.programs.size > 0 ? (
+                  <span className="mt-1 block text-slate-500">
+                    {Array.from(a.programs).slice(0, 5).join(" · ")}
+                    {a.programs.size > 5 ? " · …" : ""}
                   </span>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+                ) : null}
+              </p>
+            </article>
+          );
+        })}
       </section>
-
-      <section className="mt-10 rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-6">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-400/90">
-            Next immediate steps
-          </h2>
-          <Link href="/checklists#immediate" className="text-xs font-medium text-teal-400 hover:text-teal-300">
-            Open checklist →
-          </Link>
-        </div>
-        {openImmediate.length === 0 ? (
-          <p className="mt-4 text-sm text-slate-500">
-            {total === 0
-              ? "No checklist rows yet — run the database migration then sign up fresh (or seed per docs)."
-              : "Immediate track is cleared — rotate to the 30-day plan or monthly rhythm."}
-          </p>
-        ) : (
-          <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm text-slate-200">
-            {openImmediate.map((i) => (
-              <li key={i.id}>{i.title}</li>
-            ))}
-          </ol>
-        )}
-      </section>
-
-      <ModuleSnapshot />
     </>
   );
 }
 
-async function ModuleSnapshot() {
-  const supabase = await createClient();
-  const loyalty = await supabase.from("loyalty_accounts").select("*", { count: "exact", head: true });
-  const trips = await supabase.from("trips").select("*", { count: "exact", head: true });
-  const ideas = await supabase.from("travel_ideas").select("*", { count: "exact", head: true });
-
-  if (loyalty.error?.message.includes("relation")) {
-    return null;
-  }
-
-  return (
-    <section className="mt-10 rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-6">
-      <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-teal-400/90">Modules</h2>
-      <p className="mt-2 text-sm text-slate-500">Phase 8 data — Loyalty, Trips, and Ideas.</p>
-      <ul className="mt-6 grid gap-4 sm:grid-cols-3">
-        <li className="rounded-xl border border-white/[0.06] bg-black/20 px-4 py-3">
-          <Link href="/loyalty-programs" className="text-sm font-medium text-teal-300 hover:text-teal-200">
-            Loyalty accounts
-          </Link>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-white">{loyalty.count ?? 0}</p>
-        </li>
-        <li className="rounded-xl border border-white/[0.06] bg-black/20 px-4 py-3">
-          <Link href="/trips" className="text-sm font-medium text-teal-300 hover:text-teal-200">
-            Trips
-          </Link>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-white">{trips.count ?? 0}</p>
-        </li>
-        <li className="rounded-xl border border-white/[0.06] bg-black/20 px-4 py-3">
-          <Link href="/travel-ideas" className="text-sm font-medium text-teal-300 hover:text-teal-200">
-            Travel ideas
-          </Link>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-white">{ideas.count ?? 0}</p>
-        </li>
-      </ul>
-    </section>
-  );
+function formatPoints(n: number): string {
+  return n.toLocaleString("en-US");
 }

@@ -21,7 +21,7 @@ export default async function LoyaltyProgramsPage() {
 
   const { data: programs, error: programsError } = await supabase
     .from("loyalty_programs")
-    .select("id,slug,name,category,alliance")
+    .select("id,slug,name,category,alliance,program_type")
     .order("sort_order");
 
   const { data: travelers } = await supabase.from("profiles").select("id,display_name").order("display_name");
@@ -35,11 +35,12 @@ export default async function LoyaltyProgramsPage() {
       login_email_hint,
       login_url,
       login_password,
+      points_balance,
       balance_display,
       tier,
       notes,
       last_reviewed_at,
-      loyalty_programs ( slug, name, category, alliance ),
+      loyalty_programs ( slug, name, category, alliance, program_type ),
       profiles!traveler_profile_id ( display_name )
     `,
     )
@@ -60,6 +61,26 @@ export default async function LoyaltyProgramsPage() {
     );
   }
 
+  const missingTypeOrPoints =
+    programsError?.message.includes("program_type") ||
+    accountsError?.message.includes("program_type") ||
+    accountsError?.message.includes("points_balance");
+
+  if (missingTypeOrPoints) {
+    return (
+      <>
+        <h1 className="text-3xl font-semibold tracking-tight text-white">Loyalty programs</h1>
+        <p className="mt-4 max-w-2xl rounded-xl border border-amber-500/30 bg-amber-500/[0.06] p-5 text-sm text-amber-100">
+          Run{" "}
+          <code className="rounded bg-black/30 px-1 text-xs text-amber-200">
+            supabase/migrations/20260510100000_loyalty_program_type_points.sql
+          </code>{" "}
+          in Supabase SQL (adds program type, points, and missing login columns), then reload.
+        </p>
+      </>
+    );
+  }
+
   if (programsError || accountsError) {
     return (
       <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-6 text-sm text-rose-100">
@@ -74,14 +95,15 @@ export default async function LoyaltyProgramsPage() {
       member_id_hint: string | null;
       login_email_hint: string | null;
       login_url: string | null;
+      points_balance?: number | null;
       balance_display: string | null;
       tier: string | null;
       notes: string | null;
       last_reviewed_at: string | null;
       login_password?: string | null;
       loyalty_programs:
-        | { slug: string; name: string; category: string; alliance: string | null }
-        | { slug: string; name: string; category: string; alliance: string | null }[]
+        | { slug: string; name: string; category: string; alliance: string | null; program_type: string }
+        | { slug: string; name: string; category: string; alliance: string | null; program_type: string }[]
         | null;
       profiles: { display_name: string } | { display_name: string }[] | null;
     };
@@ -95,6 +117,7 @@ export default async function LoyaltyProgramsPage() {
       login_email_hint: r.login_email_hint,
       login_url: r.login_url,
       passwordIsSet,
+      points_balance: r.points_balance ?? null,
       balance_display: r.balance_display,
       tier: r.tier,
       notes: r.notes,
@@ -129,7 +152,12 @@ export default async function LoyaltyProgramsPage() {
             Use <strong className="font-medium text-slate-300">Last reviewed</strong> as your “as of” date when balances or tier change.
           </li>
           <li>
-            Keep <strong className="font-medium text-slate-300">Balance</strong> in a shorthand you both understand; no need for strict formats.
+            Keep <strong className="font-medium text-slate-300">Balance</strong> in shorthand you both understand; add
+            whole-number <strong className="font-medium text-slate-300">points</strong> for accurate{" "}
+            <a className="text-teal-400 hover:text-teal-300" href="/dashboard">
+              Dashboard
+            </a>{" "}
+            totals.
           </li>
           <li>
             Store <strong className="font-medium text-slate-300">masked</strong> member IDs only; prefer a password manager over the optional stored website password for high-value logins.

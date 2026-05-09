@@ -11,6 +11,7 @@ type ProgramInfo = {
   slug: string;
   name: string;
   category: string;
+  program_type: string;
   alliance: string | null;
 };
 
@@ -22,6 +23,7 @@ export type LoyaltyAccountVM = {
   login_email_hint: string | null;
   login_url: string | null;
   passwordIsSet: boolean;
+  points_balance: number | null;
   balance_display: string | null;
   tier: string | null;
   notes: string | null;
@@ -30,15 +32,14 @@ export type LoyaltyAccountVM = {
   profiles: { display_name: string } | null;
 };
 
-const CATEGORIES = [
+const PROGRAM_TYPE_FILTERS = [
   { id: "all", label: "All" },
-  { id: "airline", label: "Airlines" },
-  { id: "hotel", label: "Hotels" },
-  { id: "credit_card", label: "Cards" },
-  { id: "portal", label: "Portals" },
-  { id: "dining", label: "Dining" },
-  { id: "other", label: "Other" },
-];
+  { id: "Airline", label: "Airline" },
+  { id: "Hotel", label: "Hotel" },
+  { id: "Credit Card", label: "Credit Card" },
+  { id: "Car Rental", label: "Car Rental" },
+  { id: "Other", label: "Other" },
+] as const;
 
 export function LoyaltyWorkspace({
   programs,
@@ -46,7 +47,14 @@ export function LoyaltyWorkspace({
   accounts,
   canEdit,
 }: {
-  programs: { id: string; slug: string; name: string; category: string; alliance: string | null }[];
+  programs: {
+    id: string;
+    slug: string;
+    name: string;
+    category: string;
+    program_type: string;
+    alliance: string | null;
+  }[];
   travelers: Traveler[];
   accounts: LoyaltyAccountVM[];
   canEdit: boolean;
@@ -55,7 +63,7 @@ export function LoyaltyWorkspace({
 
   const filtered = useMemo(() => {
     if (cat === "all") return accounts;
-    return accounts.filter((a) => a.loyalty_programs?.category === cat);
+    return accounts.filter((a) => a.loyalty_programs?.program_type === cat);
   }, [accounts, cat]);
 
   return (
@@ -93,7 +101,7 @@ export function LoyaltyWorkspace({
                 <option value="">Choose…</option>
                 {programs.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.name}
+                    {p.name} · {p.program_type}
                   </option>
                 ))}
               </select>
@@ -133,6 +141,18 @@ export function LoyaltyWorkspace({
               />
             </label>
             <label className="flex flex-col gap-1 text-xs">
+              <span className="font-medium text-slate-400">Points (for Dashboard totals)</span>
+              <input
+                type="number"
+                name="points_balance"
+                min={0}
+                step={1}
+                placeholder="optional whole number"
+                className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-slate-600 outline-none ring-teal-500/40 focus:ring-2"
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-xs">
+              <span className="font-medium text-slate-400">Balance (free text)</span>
               <input
                 name="balance_display"
                 placeholder="e.g. 48k FB"
@@ -177,7 +197,7 @@ export function LoyaltyWorkspace({
         <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           <h2 className="text-sm font-semibold text-white">Household accounts</h2>
           <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((c) => (
+            {PROGRAM_TYPE_FILTERS.map((c) => (
               <button
                 key={c.id}
                 type="button"
@@ -221,7 +241,7 @@ function LoyaltyAccountCard({ row, canEdit }: { row: LoyaltyAccountVM; canEdit: 
       <li className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-5">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="text-xs uppercase tracking-wide text-slate-500">{p?.category ?? "—"}</p>
+            <p className="text-xs uppercase tracking-wide text-slate-500">{p?.program_type ?? "—"}</p>
             <h3 className="mt-1 font-medium text-white">{p?.name ?? "Program"}</h3>
             <p className="text-xs text-slate-500">{who}</p>
           </div>
@@ -253,6 +273,12 @@ function LoyaltyAccountCard({ row, canEdit }: { row: LoyaltyAccountVM; canEdit: 
               <dd className="font-mono text-slate-300">{row.member_id_hint}</dd>
             </div>
           ) : null}
+          {row.points_balance != null ? (
+            <div>
+              <dt className="text-slate-500">Points</dt>
+              <dd className="tabular-nums text-slate-200">{row.points_balance.toLocaleString("en-US")}</dd>
+            </div>
+          ) : null}
           {row.balance_display ? (
             <div>
               <dt className="text-slate-500">Balance</dt>
@@ -280,7 +306,7 @@ function LoyaltyAccountCard({ row, canEdit }: { row: LoyaltyAccountVM; canEdit: 
     <li className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-5">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <p className="text-xs uppercase tracking-wide text-slate-500">{p?.category ?? "—"}</p>
+          <p className="text-xs uppercase tracking-wide text-slate-500">{p?.program_type ?? "—"}</p>
           <h3 className="mt-1 font-medium text-white">{p?.name ?? "Program"}</h3>
           <p className="text-xs text-teal-200/80">{who}</p>
           {row.login_url ? (
@@ -354,7 +380,19 @@ function LoyaltyAccountCard({ row, canEdit }: { row: LoyaltyAccountVM; canEdit: 
           <span className="text-slate-400">Clear stored website password</span>
         </label>
         <label className="flex flex-col gap-1 text-xs">
-          <span className="text-slate-500">Balance</span>
+          <span className="text-slate-500">Points (Dashboard)</span>
+          <input
+            type="number"
+            name="points_balance"
+            min={0}
+            step={1}
+            defaultValue={row.points_balance != null ? String(row.points_balance) : ""}
+            placeholder="optional"
+            className="rounded border border-white/10 bg-black/30 px-2 py-1.5 text-sm text-white outline-none focus:ring-1 focus:ring-teal-500/50"
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-xs">
+          <span className="text-slate-500">Balance (text)</span>
           <input
             name="balance_display"
             defaultValue={row.balance_display ?? ""}
