@@ -108,4 +108,5 @@ Do **either** sign up from the app (`/login`) **or** create a user in **Authenti
 ## After Supabase · Common follow-ups
 
 - [ ] Duplicate the two `NEXT_PUBLIC_*` vars into **Vercel → Environment Variables** (deploy with **Root Directory** `web`)
+- [ ] **`docs/SPANN_TRAVEL_RUNBOOK.md`** — bookmark recurring deploy/auth triage cheatsheets
 - [ ] Second spouse sharing one household → see `docs/CHECKLISTS.md` (manual `profiles.household_id` until invite UI ships)

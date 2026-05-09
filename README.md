@@ -11,6 +11,7 @@ Private Next.js dashboard for loyalty strategy, checklists (immediate / 30-day /
 | `web/` | Next.js 16 · App Router · Tailwind v4 · Supabase Auth + Postgres RLS |
 | `supabase/migrations/` | SQL you apply manually in Supabase (or sync via CLI) |
 | `docs/APP_BUILD_CHECKLIST.md` | **Full build path:** repo → Supabase → local → Vercel → MVP backlog |
+| `docs/SPANN_TRAVEL_RUNBOOK.md` | **Maintainer runbook:** quick ref, routines, platforms (Archives-style) |
 | `docs/PROJECT_PROGRESS.md` | Maintainer milestone ledger (keep in sync with build checklist) |
 | `docs/CHECKLISTS.md` | How household checklists behave + reset / join patterns |
 | `docs/SUPABASE_SETUP_CHECKLIST.md` | Supabase-only deep checklist |
@@ -19,7 +20,7 @@ Private Next.js dashboard for loyalty strategy, checklists (immediate / 30-day /
 
 ### One-time prerequisites (full sequence)
 
-Use **`docs/APP_BUILD_CHECKLIST.md`** — ordered checkboxes from clone through production and MVP modules. Supabase detail lives in **`docs/SUPABASE_SETUP_CHECKLIST.md`**.
+Use **`docs/APP_BUILD_CHECKLIST.md`** — ordered checkboxes from clone through production and MVP modules. Supabase detail lives in **`docs/SUPABASE_SETUP_CHECKLIST.md`**. Ongoing ops quick reference: **`docs/SPANN_TRAVEL_RUNBOOK.md`**.
 
 ### Daily development
 
@@ -42,4 +43,4 @@ npm run dev    # http://localhost:3000
 
 ### Maintainer documentation
 
-Primary: **`docs/APP_BUILD_CHECKLIST.md`**. Track major milestones in **`docs/PROJECT_PROGRESS.md`**. Supabase drill-down: **`docs/SUPABASE_SETUP_CHECKLIST.md`**. Checklist ops: **`docs/CHECKLISTS.md`**. Loyalty hygiene: **`docs/LOYALTY_BEST_PRACTICES.md`**.
+Primary: **`docs/APP_BUILD_CHECKLIST.md`**. Maintainer ops: **`docs/SPANN_TRAVEL_RUNBOOK.md`**. Track major milestones in **`docs/PROJECT_PROGRESS.md`**. Supabase drill-down: **`docs/SUPABASE_SETUP_CHECKLIST.md`**. Checklist ops: **`docs/CHECKLISTS.md`**. Loyalty hygiene: **`docs/LOYALTY_BEST_PRACTICES.md`**.

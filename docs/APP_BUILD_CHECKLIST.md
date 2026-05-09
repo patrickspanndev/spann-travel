@@ -8,6 +8,7 @@ Single ordered path from **empty hands → working local app → production → 
 |----------|------|
 | **This file** | Master sequence for build, deploy, and MVP rollout |
 | [`SUPABASE_SETUP_CHECKLIST.md`](./SUPABASE_SETUP_CHECKLIST.md) | Deep checkbox list for hosted Supabase only |
+| [`SPANN_TRAVEL_RUNBOOK.md`](./SPANN_TRAVEL_RUNBOOK.md) | Maintainer ops quick reference (URLs, routines, rotations) |
 | [`PROJECT_PROGRESS.md`](./PROJECT_PROGRESS.md) | Maintainer milestone ledger (keep `[x]` in sync here when you ship) |
 | [`CHECKLISTS.md`](./CHECKLISTS.md) | Household checklist data ops + spouse join workarounds |
 | [`LOYALTY_BEST_PRACTICES.md`](./LOYALTY_BEST_PRACTICES.md) | Manual loyalty tracking rhythm, credentials, masking, roles |
@@ -25,7 +26,7 @@ Single ordered path from **empty hands → working local app → production → 
 
 ### Phase 2 · Supabase (backend)
 
-Work through **`docs/SUPABASE_SETUP_CHECKLIST.md`** (sections **A → F**) in order.
+Work through **`docs/SUPABASE_SETUP_CHECKLIST.md`** (sections **A → F**) in order — then skim **`docs/SPANN_TRAVEL_RUNBOOK.md`** for where secrets live (**Vercel** vs **`web/.env.local`**) before you onboard a second maintainer.
 
 Then confirm:
 
@@ -58,14 +59,34 @@ Then confirm:
 
 ### Phase 5 · Vercel (production)
 
-Mirrors **`family-archive`**: subdirectory app.
+Same **monorepo layout** as **Spann Memories** (`family-archive`) and **[Spann Music](https://github.com/patrickspanndev/spann-music)**: the Next.js app lives in **`web/`**, not the repo root — Vercel must build that folder.
 
-- [ ] New Vercel project from Git repo
-- [ ] **Root Directory** = **`web`**
-- [ ] **`NEXT_PUBLIC_SUPABASE_URL`** and **`NEXT_PUBLIC_SUPABASE_ANON_KEY`** in Vercel (Production / Preview as needed)
-- [ ] Deploy succeeds; redeploy after env changes
-- [ ] Production URL loads; auth + dashboard + checklists exercised
-- [ ] Supabase **Authentication → URL Configuration** — **Site URL** (and any redirect allowlist your auth flow needs) points at prod (and localhost for dev)
+#### Step-by-step (first deploy)
+
+1. [ ] **[vercel.com](https://vercel.com)** → sign in → **Add New…** → **Project**
+2. [ ] **Import Git Repository** — pick **`patrickspanndev/spann-travel`** (install the GitHub app / grant org access if prompted)
+3. [ ] Configure project before **Deploy**:
+   - [ ] **Framework Preset**: Next.js (auto-detected from `web/package.json` once root is set)
+   - [ ] **Root Directory** → **Edit** → set **`web`** (critical — do **not** leave blank or builds read the repo root by mistake)
+   - [ ] **Build Command** → default `npm run build` inside `web/` is fine
+   - [ ] **Output Directory** → leave default unless you customized Next output
+   - [ ] **Install Command** → default `npm install` is fine
+4. [ ] **Environment Variables** (same tab or **Settings → Environment Variables**):
+   - [ ] **`NEXT_PUBLIC_SUPABASE_URL`** — Production (and **Preview** if you want previews to hit Supabase)
+   - [ ] **`NEXT_PUBLIC_SUPABASE_ANON_KEY`** — same scopes as URL
+   - [ ] Paste values from **`web/.env.local`** (never commit that file — copy manually or from Supabase Dashboard)
+5. [ ] Click **Deploy** — wait until build **Ready**
+6. [ ] Every time you change env vars: **Deployments** → latest deploy → ⋯ menu → **Redeploy**
+
+#### After deploy checks
+
+- [ ] Open the **Production URL** → sign in → **`/dashboard`**, **`/checklists`** work
+- [ ] Supabase **Authentication → URL Configuration** — **Site URL** matches production origin; **Redirect URLs** include `http://localhost:3000` for local dev plus your `*.vercel.app` preview host if previews use Auth
+- [ ] Optional **Preview** deployments: duplicate env vars under **Preview** or inherit from Production per your preference
+
+Sibling repos using the **same Vercel pattern**: Spann Memories + Spann Travel + Spann Music each use **Root Directory = `web`**.
+
+---
 
 ---
 
