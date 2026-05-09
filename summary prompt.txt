@@ -1,0 +1,26 @@
+Summarize this entire chat into a structured daily summary with the following sections:
+
+1. Architectural Decisions Made
+
+2. Implementation Changes
+
+3. Problems Solved
+
+4. Debug Lessons Learned
+
+5. Current System State
+
+6. Open Technical Threads
+
+7. Risks or Constraints Identified
+
+Keep it concise but complete.
+
+Do not include conversational fluff.
+
+Do not include obsolete attempts.
+
+Format for saving as:
+
+spannTravel/ai_summaries/<YYYY-MM-DD>-daily-summary.md. make sure the date is the current system date, not from chat name
+
