@@ -10,7 +10,7 @@ Single ordered path from **empty hands → working local app → production → 
 | [`SUPABASE_SETUP_CHECKLIST.md`](./SUPABASE_SETUP_CHECKLIST.md) | Deep checkbox list for hosted Supabase only |
 | [`PROJECT_PROGRESS.md`](./PROJECT_PROGRESS.md) | Maintainer milestone ledger (keep `[x]` in sync here when you ship) |
 | [`CHECKLISTS.md`](./CHECKLISTS.md) | Household checklist data ops + spouse join workarounds |
-| [`../app_prompt.txt`](../app_prompt.txt) | Full product intent |
+| [`LOYALTY_BEST_PRACTICES.md`](./LOYALTY_BEST_PRACTICES.md) | Manual loyalty tracking rhythm, credentials, masking, roles |
 
 ---
 

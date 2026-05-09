@@ -117,6 +117,38 @@ export default async function LoyaltyProgramsPage() {
           View-only mode — you can browse accounts but not edit.
         </p>
       ) : null}
+      <details className="group mt-6 max-w-2xl rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-sm text-slate-400 open:border-teal-500/25">
+        <summary className="cursor-pointer list-none font-medium text-teal-200/90 marker:hidden [&::-webkit-details-marker]:hidden">
+          <span className="inline-flex items-center gap-2">
+            Manual tracking — household tips
+            <span className="text-xs font-normal text-slate-500 group-open:hidden">(expand)</span>
+          </span>
+        </summary>
+        <ul className="mt-3 list-disc space-y-2 pl-5 leading-relaxed">
+          <li>
+            Use <strong className="font-medium text-slate-300">Last reviewed</strong> as your “as of” date when balances or tier change.
+          </li>
+          <li>
+            Keep <strong className="font-medium text-slate-300">Balance</strong> in a shorthand you both understand; no need for strict formats.
+          </li>
+          <li>
+            Store <strong className="font-medium text-slate-300">masked</strong> member IDs only; prefer a password manager over the optional stored website password for high-value logins.
+          </li>
+          <li>
+            <strong className="font-medium text-slate-300">Login URL</strong> should be the real member sign-in page you use day to day.
+          </li>
+          <li>
+            Anyone who can edit Loyalty is <strong className="font-medium text-slate-300">trusted</strong> with rows in this household — use the <strong className="font-medium text-slate-300">viewer</strong> role for read-only access.
+          </li>
+          <li>
+            Before transfers, follow <a className="text-teal-400 hover:text-teal-300" href="/strategy">Strategy</a> (confirm award space, no speculative moves).
+          </li>
+        </ul>
+        <p className="mt-3 border-t border-white/5 pt-3 text-xs text-slate-500">
+          Longer checklist: repo{" "}
+          <code className="rounded bg-white/10 px-1 text-slate-400">docs/LOYALTY_BEST_PRACTICES.md</code>
+        </p>
+      </details>
       <LoyaltyWorkspace
         programs={programs ?? []}
         travelers={travelers ?? []}

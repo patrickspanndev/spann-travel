@@ -14,6 +14,7 @@ Private Next.js dashboard for loyalty strategy, checklists (immediate / 30-day /
 | `docs/PROJECT_PROGRESS.md` | Maintainer milestone ledger (keep in sync with build checklist) |
 | `docs/CHECKLISTS.md` | How household checklists behave + reset / join patterns |
 | `docs/SUPABASE_SETUP_CHECKLIST.md` | Supabase-only deep checklist |
+| `docs/LOYALTY_BEST_PRACTICES.md` | Manual loyalty tracking rhythm, credentials, masking, roles |
 | `app_prompt.txt` | Original UX + feature brief |
 
 ### One-time prerequisites (full sequence)
@@ -41,4 +42,4 @@ npm run dev    # http://localhost:3000
 
 ### Maintainer documentation
 
-Primary: **`docs/APP_BUILD_CHECKLIST.md`**. Track major milestones in **`docs/PROJECT_PROGRESS.md`**. Supabase drill-down: **`docs/SUPABASE_SETUP_CHECKLIST.md`**. Checklist ops: **`docs/CHECKLISTS.md`**.
+Primary: **`docs/APP_BUILD_CHECKLIST.md`**. Track major milestones in **`docs/PROJECT_PROGRESS.md`**. Supabase drill-down: **`docs/SUPABASE_SETUP_CHECKLIST.md`**. Checklist ops: **`docs/CHECKLISTS.md`**. Loyalty hygiene: **`docs/LOYALTY_BEST_PRACTICES.md`**.
