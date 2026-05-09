@@ -79,6 +79,7 @@ If you only use the new **Publishable** key: stay on **legacy anon** for this pr
 - [ ] If you **already** applied an **older** copy of that file and **Checklists** shows `infinite recursion detected in policy for relation "profiles"`, run **`supabase/migrations/20260507090000_fix_profiles_rls_recursion.sql`** once in SQL Editor (safe to re-run policies + function)
 - [ ] **Phase 8 (MVP modules):** run **`supabase/migrations/20260509100000_phase8_loyalty_trips_ideas.sql`** once — adds `loyalty_programs`, `loyalty_accounts`, `trips`, `travel_ideas` + RLS
 - [ ] **Loyalty website passwords (optional column):** run **`supabase/migrations/20260509120000_loyalty_login_password.sql`** once — adds `loyalty_accounts.login_password`
+- [ ] **Loyalty login link (optional column):** run **`supabase/migrations/20260509130000_loyalty_login_url.sql`** once — adds `loyalty_accounts.login_url`
 - [ ] No other errors (if trigger syntax fails on your Postgres build, adjust `EXECUTE FUNCTION` / `EXECUTE PROCEDURE` per SQL Editor message and re-run only the failing statements—or ask in-repo)
 - [ ] **Table Editor** — confirm tables exist: `households`, `profiles`, `checklist_lists`, `checklist_items`, plus after Phase 8 migration: `loyalty_programs`, `loyalty_accounts`, `trips`, `travel_ideas`
 

@@ -33,6 +33,7 @@ export default async function LoyaltyProgramsPage() {
       id,
       member_id_hint,
       login_email_hint,
+      login_url,
       login_password,
       balance_display,
       tier,
@@ -72,6 +73,7 @@ export default async function LoyaltyProgramsPage() {
       id: string;
       member_id_hint: string | null;
       login_email_hint: string | null;
+      login_url: string | null;
       balance_display: string | null;
       tier: string | null;
       notes: string | null;
@@ -91,6 +93,7 @@ export default async function LoyaltyProgramsPage() {
       id: r.id,
       member_id_hint: r.member_id_hint,
       login_email_hint: r.login_email_hint,
+      login_url: r.login_url,
       passwordIsSet,
       balance_display: r.balance_display,
       tier: r.tier,

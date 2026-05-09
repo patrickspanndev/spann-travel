@@ -20,6 +20,7 @@ export type LoyaltyAccountVM = {
   id: string;
   member_id_hint: string | null;
   login_email_hint: string | null;
+  login_url: string | null;
   passwordIsSet: boolean;
   balance_display: string | null;
   tier: string | null;
@@ -110,6 +111,15 @@ export function LoyaltyWorkspace({
               <input
                 name="login_email_hint"
                 placeholder="which inbox logs in"
+                className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-slate-600 outline-none ring-teal-500/40 focus:ring-2"
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-xs sm:col-span-2">
+              <span className="font-medium text-slate-400">Program login URL (optional)</span>
+              <input
+                type="url"
+                name="login_url"
+                placeholder="https://… or flyingblue.com"
                 className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-slate-600 outline-none ring-teal-500/40 focus:ring-2"
               />
             </label>
@@ -222,6 +232,21 @@ function LoyaltyAccountCard({ row, canEdit }: { row: LoyaltyAccountVM; canEdit: 
           ) : null}
         </div>
         <dl className="mt-4 grid gap-2 text-xs text-slate-400">
+          {row.login_url ? (
+            <div>
+              <dt className="text-slate-500">Sign in</dt>
+              <dd>
+                <a
+                  href={row.login_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-teal-400 hover:text-teal-300"
+                >
+                  Open program login →
+                </a>
+              </dd>
+            </div>
+          ) : null}
           {row.member_id_hint ? (
             <div>
               <dt className="text-slate-500">Member ref</dt>
@@ -258,6 +283,16 @@ function LoyaltyAccountCard({ row, canEdit }: { row: LoyaltyAccountVM; canEdit: 
           <p className="text-xs uppercase tracking-wide text-slate-500">{p?.category ?? "—"}</p>
           <h3 className="mt-1 font-medium text-white">{p?.name ?? "Program"}</h3>
           <p className="text-xs text-teal-200/80">{who}</p>
+          {row.login_url ? (
+            <a
+              href={row.login_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-block text-xs font-medium text-teal-400 hover:text-teal-300"
+            >
+              Open program login →
+            </a>
+          ) : null}
         </div>
         <form action={deleteLoyaltyAccount}>
           <input type="hidden" name="id" value={row.id} />
@@ -277,6 +312,16 @@ function LoyaltyAccountCard({ row, canEdit }: { row: LoyaltyAccountVM; canEdit: 
           <input
             name="member_id_hint"
             defaultValue={row.member_id_hint ?? ""}
+            className="rounded border border-white/10 bg-black/30 px-2 py-1.5 text-sm text-white outline-none focus:ring-1 focus:ring-teal-500/50"
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-xs sm:col-span-2">
+          <span className="text-slate-500">Program login URL</span>
+          <input
+            type="url"
+            name="login_url"
+            defaultValue={row.login_url ?? ""}
+            placeholder="https://…"
             className="rounded border border-white/10 bg-black/30 px-2 py-1.5 text-sm text-white outline-none focus:ring-1 focus:ring-teal-500/50"
           />
         </label>

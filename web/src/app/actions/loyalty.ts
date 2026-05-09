@@ -40,6 +40,7 @@ export async function createLoyaltyAccount(formData: FormData): Promise<void> {
     notes: nullIfEmpty(formData.get("notes")),
     last_reviewed_at: nullIfEmpty(formData.get("last_reviewed_at")),
     login_password: nullIfEmpty(formData.get("login_password")),
+    login_url: normalizeLoginUrl(formData.get("login_url")),
   };
 
   const { error } = await ctx.supabase.from("loyalty_accounts").insert(payload);
@@ -58,6 +59,7 @@ export async function updateLoyaltyAccount(formData: FormData): Promise<void> {
   const patch: Record<string, string | null> = {
     member_id_hint: nullIfEmpty(formData.get("member_id_hint")),
     login_email_hint: nullIfEmpty(formData.get("login_email_hint")),
+    login_url: normalizeLoginUrl(formData.get("login_url")),
     balance_display: nullIfEmpty(formData.get("balance_display")),
     tier: nullIfEmpty(formData.get("tier")),
     notes: nullIfEmpty(formData.get("notes")),
@@ -106,4 +108,20 @@ function nullIfEmpty(v: FormDataEntryValue | null): string | null {
   if (v == null) return null;
   const s = String(v).trim();
   return s === "" ? null : s;
+}
+
+function normalizeLoginUrl(v: FormDataEntryValue | null): string | null {
+  const raw = nullIfEmpty(v);
+  if (raw === null) return null;
+  const withScheme = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+  let parsed: URL;
+  try {
+    parsed = new URL(withScheme);
+  } catch {
+    throw new Error("Login URL must look like a website address (e.g. flyingblue.com or https://…)");
+  }
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    throw new Error("Login URL must use http or https.");
+  }
+  return parsed.toString();
 }
