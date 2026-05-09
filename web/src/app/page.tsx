@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getPublicSupabaseConfig } from "@/lib/supabase/public-env";
 
 export default async function Home() {
-  const hasSupabaseEnv =
-    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const hasSupabaseEnv = getPublicSupabaseConfig() !== null;
 
   if (!hasSupabaseEnv) {
     return (

@@ -1,0 +1,12 @@
+/**
+ * Supabase browser/server helpers read NEXT_PUBLIC_* at build time (Next inlines them).
+ * Trim avoids "Failed to fetch" when the dashboard or Vercel UI adds trailing newlines/spaces.
+ */
+export function getPublicSupabaseConfig():
+  | { url: string; anonKey: string }
+  | null {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+  if (!url || !anonKey) return null;
+  return { url, anonKey };
+}

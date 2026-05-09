@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
+import { getPublicSupabaseConfig } from "@/lib/supabase/public-env";
 
 const PROTECTED_PRE = [
   "/dashboard",
@@ -20,7 +21,8 @@ export async function middleware(request: NextRequest) {
     request,
   });
 
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  const publicCfg = getPublicSupabaseConfig();
+  if (!publicCfg) {
     if (isProtectedPath(request.nextUrl.pathname)) {
       return NextResponse.redirect(new URL("/", request.url));
     }
@@ -28,8 +30,8 @@ export async function middleware(request: NextRequest) {
   }
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    publicCfg.url,
+    publicCfg.anonKey,
     {
       cookies: {
         getAll() {

@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { getPublicSupabaseConfig } from "@/lib/supabase/public-env";
+
+function formatAuthError(message: string): string {
+  if (message === "Failed to fetch") {
+    return "Could not reach Supabase. Common fixes: In Vercel → Settings → Environment Variables, set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY for Production (same as Supabase → Project Settings → API), save, then Redeploy — these are baked in at build time. Remove accidental spaces/newlines in the values. In the browser → DevTools → Network, confirm requests go to https://<ref>.supabase.co and are not blocked.";
+  }
+  return message;
+}
 
 export function LoginForm() {
   const router = useRouter();
@@ -13,8 +21,7 @@ export function LoginForm() {
   const [message, setMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
-  const ready =
-    !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const ready = getPublicSupabaseConfig() !== null;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -33,7 +40,7 @@ export function LoginForm() {
           options: { data: { display_name: displayName } },
         });
         if (error) {
-          setMessage(error.message);
+          setMessage(formatAuthError(error.message));
           return;
         }
         setMessage("Check email to confirm signup (Supabase dashboard → Auth → Providers). Then sign in.");
@@ -41,12 +48,15 @@ export function LoginForm() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
-          setMessage(error.message);
+          setMessage(formatAuthError(error.message));
           return;
         }
         router.push("/dashboard");
         router.refresh();
       }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Request failed";
+      setMessage(formatAuthError(msg));
     } finally {
       setPending(false);
     }
